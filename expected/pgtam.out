@@ -1,0 +1,64 @@
+create extension pgtam;
+create table x(a int) using mem;
+NOTICE:  in mem_tableam_handler: mem_tableam handler loaded
+NOTICE:  Created table: [x]
+NOTICE:  in memam_relation_set_new_filelocator
+NOTICE:  in mem_tableam_handler: mem_tableam handler loaded
+NOTICE:  in memam_relation_needs_toast_table
+create table y(a int) using mem;
+NOTICE:  in mem_tableam_handler: mem_tableam handler loaded
+NOTICE:  Created table: [y]
+NOTICE:  in memam_relation_set_new_filelocator
+NOTICE:  in mem_tableam_handler: mem_tableam handler loaded
+NOTICE:  in memam_relation_needs_toast_table
+INSERT INTO x VALUES (23), (101);
+NOTICE:  in mem_tableam_handler: mem_tableam handler loaded
+LINE 1: INSERT INTO x VALUES (23), (101);
+                    ^
+NOTICE:  in memam_slot_callbacks
+NOTICE:  in memam_tuple_insert
+NOTICE:  in memam_tuple_insert
+select a from x;
+NOTICE:  in memam_estimate_rel_size
+NOTICE:  in memam_slot_callbacks
+NOTICE:  in memam_beginscan
+NOTICE:  in memam_getnextslot
+NOTICE:  in memam_getnextslot
+NOTICE:  in memam_getnextslot
+NOTICE:  in memam_endscan
+  a  
+-----
+  23
+ 101
+(2 rows)
+
+select a from x where a = 23;
+NOTICE:  in memam_estimate_rel_size
+NOTICE:  in memam_slot_callbacks
+NOTICE:  in memam_beginscan
+NOTICE:  in memam_getnextslot
+NOTICE:  in memam_getnextslot
+NOTICE:  in memam_getnextslot
+NOTICE:  in memam_endscan
+ a  
+----
+ 23
+(1 row)
+
+select a from y;
+NOTICE:  in mem_tableam_handler: mem_tableam handler loaded
+LINE 1: select a from y;
+                      ^
+NOTICE:  in memam_estimate_rel_size
+NOTICE:  in memam_slot_callbacks
+NOTICE:  in memam_beginscan
+NOTICE:  in memam_getnextslot
+NOTICE:  in memam_endscan
+ a 
+---
+(0 rows)
+
+drop extension pgtam cascade;
+NOTICE:  drop cascades to 2 other objects
+DETAIL:  drop cascades to table x
+drop cascades to table y
